@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  mongodb:
+    image: mongo:latest
+    networks:
+      - hepsiburada-network
+    ports:
+      - 27017:27017
+      
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - hepsiburada-network
+
+networks:
+  hepsiburada-network:
+    driver: bridge
