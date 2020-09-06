@@ -1,6 +1,4 @@
-﻿using Hangfire.Api.Helper;
-using Hangfire.Api.Helper.Interface;
-using Hangfire.Api.Job;
+﻿using Hangfire.Api.Job;
 using Hangfire.Api.Models;
 using Hangfire.Api.Services;
 using Hangfire.Api.Services.Interface;
@@ -39,11 +37,12 @@ namespace Hangfire.Api
                         BackupStrategy = MongoBackupStrategy.Collections
                     }
                 };
-                var settings = new MongoClientSettings();
-                settings.Server = new MongoServerAddress(_appSettings.MongoConnectionStrings, 27017);
+                var settings = new MongoClientSettings
+                {
+                    Server = new MongoServerAddress(_appSettings.MongoConnectionStrings, 27017)
+                };
                 config.UseMongoStorage(settings, "Hepsiburada", migrationOptions);
             });
-
 
             services.AddDistributedRedisCache(options =>
             {
@@ -60,7 +59,6 @@ namespace Hangfire.Api
         private static void IocConfiguration(IServiceCollection services)
         {
             services.AddScoped<IDealOfTheDayJobs, DealOfTheDayJobs>();
-            services.AddScoped<IRedisConnectionManager, RedisConnectionManager>();
             services.AddScoped<IRedisService, RedisService>();
         }
 
@@ -77,7 +75,7 @@ namespace Hangfire.Api
 
             GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 0 });
 
-            //TODO: Mustafa burada paramatre verılmeden gıdebılır mıyız kontrol et 
+            //TODO: burada parametre verılmeden gıdebılır mıyız kontrol et 
             HangfireScheduler.HangfireSchedulerJobs(_appSettings);
 
             app.UseRouting();

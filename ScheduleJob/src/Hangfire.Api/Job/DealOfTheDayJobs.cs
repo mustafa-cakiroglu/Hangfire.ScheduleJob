@@ -1,9 +1,7 @@
 ﻿using Hangfire.Api.Models;
-using ServiceStack;
 using ServiceStack.Redis;
 using StackExchange.Redis;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Hangfire.Api.Job
@@ -20,7 +18,7 @@ namespace Hangfire.Api.Job
 
         private Task DummyData()
         {
-            using (IRedisClient client = new RedisClient())
+            using (var client = new RedisClient())
             {
                 for (int i = 1; i < 11; i++)
                 {
@@ -41,10 +39,10 @@ namespace Hangfire.Api.Job
                 }
             }
 
-            string EXPIRED_KEYS_CHANNEL = "__keyevent@0__:expired";
-            ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(_appSettings.Redis.Host);
-            ISubscriber subscriber = connection.GetSubscriber();
-            subscriber.Subscribe(EXPIRED_KEYS_CHANNEL, (channel, key) =>
+            string expiredKeysChannel = "__keyevent@0__:expired";
+            var connection = ConnectionMultiplexer.Connect(_appSettings.Redis.Host);
+            var subscriber = connection.GetSubscriber();
+            subscriber.Subscribe(expiredKeysChannel, (channel, key) =>
             {
                 Console.WriteLine($"Hepsiburada cache: {key}");
             });
