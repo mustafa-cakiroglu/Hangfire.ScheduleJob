@@ -14,6 +14,7 @@ services:
       - 6379:6379
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
+    command: ["--notify-keyspace-events", "KEx"]
     networks:
       - hepsiburada-network
 
